@@ -15,7 +15,7 @@ var (
 	DefaultFolderPerm     = os.FileMode(0755)
 )
 
-func UpdateRawData(c *gin.Context) {
+func RawData(c *gin.Context) {
 	// 获取传递来的比特流数据
 	rawData, err := c.GetRawData()
 	if err != nil {
@@ -40,8 +40,8 @@ func UpdateRawData(c *gin.Context) {
 	}
 }
 
-// UpdateFiles 使用Multipart表单,上传一个或者多个文件
-func UpdateFiles(c *gin.Context) {
+// Files 使用Multipart表单,上传一个或者多个文件
+func Files(c *gin.Context) {
 	// 获取请求中的所有Multipart表单
 	form, err := c.MultipartForm()
 	if err != nil {
