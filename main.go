@@ -13,8 +13,8 @@ func main() {
 	// 加载路由
 	routers.Upload(engine)
 
-	// 在127.0.0.1:80上启动
-	err := engine.Run("127.0.0.1:80")
+	// 在:80上启动
+	err := engine.Run(":80")
 	if err != nil {
 		log.Panicln(err)
 	}

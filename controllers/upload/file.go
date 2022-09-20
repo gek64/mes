@@ -1,6 +1,7 @@
 package upload
 
 import (
+	"bufio"
 	"github.com/gin-gonic/gin"
 	"log"
 	"os"
@@ -8,23 +9,44 @@ import (
 )
 
 var (
-	DefaultUploadLocation = "upload"
-	DefaultLocationKey    = "location"
-	DefaultFileKey        = "file"
-	DefaultRawFileName    = ""
-	DefaultFolderPerm     = os.FileMode(0755)
+	DefaultDestinationKey = "destination"
+	DefaultFileKey        = "fileName"
+	DefaultDestination    = "upload"
+	DefaultPerm           = os.FileMode(0755)
 )
 
-func RawData(c *gin.Context) {
+type Upload struct {
+	FileName    string `form:"fileName" json:"fileName" xml:"fileName" uri:"fileName"`
+	Destination string `form:"destination" json:"destination" xml:"destination" uri:"destination"`
+}
+
+// Raw 以 application/octet-stream 方式上传单个文件
+func Raw(c *gin.Context) {
+	// 获取url中的目标文件名
+	var u Upload
+	err := c.ShouldBindUri(&u)
+	if err != nil {
+		log.Panicln(err)
+	}
+
 	// 获取传递来的比特流数据
 	rawData, err := c.GetRawData()
 	if err != nil {
 		log.Panicln(err)
 	}
 
-	// 新建一个文件
-	tmpFile, err := os.Create(DefaultUploadLocation + DefaultRawFileName)
-
+	// 新建文件存储目的地
+	p, err := filepath.Abs(DefaultDestination)
+	if err != nil {
+		log.Panicln(err)
+	}
+	err = os.MkdirAll(p, DefaultPerm)
+	if err != nil {
+		log.Panicln(err)
+	}
+	// 新建文件
+	f := filepath.Join(p, u.FileName)
+	tmpFile, err := os.Create(f)
 	// 函数结束时关闭文件
 	defer func(tmpFile *os.File) {
 		err := tmpFile.Close()
@@ -33,8 +55,10 @@ func RawData(c *gin.Context) {
 		}
 	}(tmpFile)
 
+	// 使用缓冲写入器
+	writer := bufio.NewWriter(tmpFile)
 	// 文件中写入比特流
-	_, err = tmpFile.Write(rawData)
+	_, err = writer.Write(rawData)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -49,14 +73,14 @@ func Files(c *gin.Context) {
 	}
 
 	// 获取表单中的上传文件的存储路径
-	location, err := filepath.Abs(c.DefaultPostForm(DefaultLocationKey, DefaultUploadLocation))
+	location, err := filepath.Abs(c.DefaultPostForm(DefaultDestinationKey, ""))
 	if err != nil {
 		log.Panicln(err)
 	}
 	// 存储路径不存在则新建
 	_, err = os.Stat(location)
 	if os.IsNotExist(err) {
-		err := os.MkdirAll(location, DefaultFolderPerm)
+		err := os.MkdirAll(location, DefaultPerm)
 		if err != nil {
 			log.Panicln(err)
 		}
