@@ -1,0 +1,144 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "",
+    "version": "1.0.0",
+    "title": "Media Exchange System",
+    "contact": {
+      "name": "Support",
+      "url": "https://github.com/gek64/mes/issues/new"
+    },
+    "license": {
+      "name": "GNU General Public License v3.0",
+      "url": "https://github.com/gek64/mes/raw/main/LICENSE"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost"
+    },
+    {
+      "url": "http://127.0.0.1"
+    },
+    {
+      "url": "http://[::1]"
+    }
+  ],
+  "tags": [
+    {
+      "name": "upload",
+      "description": "上传文件"
+    }
+  ],
+  "paths": {
+    "/upload/raw": {
+      "post": {
+        "tags": [
+          "upload"
+        ],
+        "summary": "以二进制流文件方式上传单个文件",
+        "description": "",
+        "operationId": "Raw",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "query",
+            "allowEmptyValue": false,
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "allowEmptyValue": true,
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/uploadRawData"
+        },
+        "responses": {
+          "200": {
+            "description": "upload done"
+          }
+        }
+      }
+    },
+    "/upload/file": {
+      "post": {
+        "tags": [
+          "upload"
+        ],
+        "summary": "以表单方式上传文件",
+        "description": "",
+        "operationId": "Files",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/uploadFiles"
+        },
+        "responses": {
+          "200": {
+            "description": "upload done"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "requestBodies": {
+      "uploadRawData": {
+        "content": {
+          "application/octet-stream": {
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        },
+        "description": "以二进制流文件方式上传单个文件",
+        "required": true
+      },
+      "uploadFiles": {
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "以表单方式上传文件",
+        "required": true
+      }
+    },
+    "schemas": {
+      "Test": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

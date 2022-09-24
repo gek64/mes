@@ -1,18 +1,16 @@
 package upload
 
 import (
-	"bufio"
 	"github.com/gin-gonic/gin"
 	"log"
-	"os"
+	"mes/mods"
 	"path/filepath"
 )
 
 var (
 	DefaultDestinationKey = "destination"
-	DefaultFileKey        = "fileName"
+	DefaultFileKey        = "file"
 	DefaultDestination    = "upload"
-	DefaultPerm           = os.FileMode(0755)
 )
 
 type Upload struct {
@@ -22,11 +20,14 @@ type Upload struct {
 
 // Raw 以 application/octet-stream 方式上传单个文件
 func Raw(c *gin.Context) {
-	// 获取url中的目标文件名
-	var u Upload
-	err := c.ShouldBindUri(&u)
+	// url变量绑定到变量,获取url中的文件名
+	var uploadDetail Upload
+	err := c.ShouldBindQuery(&uploadDetail)
 	if err != nil {
 		log.Panicln(err)
+	}
+	if uploadDetail.Destination == "" {
+		uploadDetail.Destination = DefaultDestination
 	}
 
 	// 获取传递来的比特流数据
@@ -36,29 +37,13 @@ func Raw(c *gin.Context) {
 	}
 
 	// 新建文件存储目的地
-	p, err := filepath.Abs(DefaultDestination)
+	err = mods.CreateFolderIFNotExist(uploadDetail.Destination)
 	if err != nil {
 		log.Panicln(err)
 	}
-	err = os.MkdirAll(p, DefaultPerm)
-	if err != nil {
-		log.Panicln(err)
-	}
-	// 新建文件
-	f := filepath.Join(p, u.FileName)
-	tmpFile, err := os.Create(f)
-	// 函数结束时关闭文件
-	defer func(tmpFile *os.File) {
-		err := tmpFile.Close()
-		if err != nil {
-			log.Panicln(err)
-		}
-	}(tmpFile)
 
-	// 使用缓冲写入器
-	writer := bufio.NewWriter(tmpFile)
-	// 文件中写入比特流
-	_, err = writer.Write(rawData)
+	// 新建文件
+	err = mods.WriteToFile(filepath.Join(uploadDetail.Destination, uploadDetail.FileName), rawData)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -73,17 +58,14 @@ func Files(c *gin.Context) {
 	}
 
 	// 获取表单中的上传文件的存储路径
-	location, err := filepath.Abs(c.DefaultPostForm(DefaultDestinationKey, ""))
+	location, err := filepath.Abs(c.DefaultPostForm(DefaultDestinationKey, DefaultDestination))
 	if err != nil {
 		log.Panicln(err)
 	}
 	// 存储路径不存在则新建
-	_, err = os.Stat(location)
-	if os.IsNotExist(err) {
-		err := os.MkdirAll(location, DefaultPerm)
-		if err != nil {
-			log.Panicln(err)
-		}
+	err = mods.CreateFolderIFNotExist(location)
+	if err != nil {
+		log.Panicln(err)
 	}
 
 	// 从表单中获取所有value类型为File的项中name为"file"的所有项
@@ -96,5 +78,4 @@ func Files(c *gin.Context) {
 			log.Panicln(err)
 		}
 	}
-
 }
