@@ -8,7 +8,10 @@ import (
 func Upload(router *gin.Engine) {
 	routerGroup := router.Group("/upload")
 	{
-		routerGroup.POST("/raw", upload.Raw)
-		routerGroup.POST("/file", upload.Files)
+		// 文件
+		routerGroup.POST("/rawFile", upload.RawFile)
+		routerGroup.POST("/files", upload.Files)
+		// 文本
+		routerGroup.POST("/text", upload.Text)
 	}
 }

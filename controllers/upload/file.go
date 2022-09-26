@@ -18,8 +18,8 @@ type Upload struct {
 	Destination string `form:"destination" json:"destination" xml:"destination" uri:"destination"`
 }
 
-// Raw 以 application/octet-stream 方式上传单个文件
-func Raw(c *gin.Context) {
+// RawFile 以 application/octet-stream 方式上传单个文件
+func RawFile(c *gin.Context) {
 	// url变量绑定到变量,获取url中的文件名
 	var uploadDetail Upload
 	err := c.ShouldBindQuery(&uploadDetail)

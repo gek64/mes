@@ -31,14 +31,14 @@
     }
   ],
   "paths": {
-    "/upload/raw": {
+    "/upload/rawFile": {
       "post": {
         "tags": [
           "upload"
         ],
         "summary": "以二进制流文件方式上传单个文件",
         "description": "",
-        "operationId": "Raw",
+        "operationId": "RawFile",
         "parameters": [
           {
             "name": "fileName",
@@ -69,7 +69,7 @@
         }
       }
     },
-    "/upload/file": {
+    "/upload/files": {
       "post": {
         "tags": [
           "upload"
@@ -79,6 +79,24 @@
         "operationId": "Files",
         "requestBody": {
           "$ref": "#/components/requestBodies/uploadFiles"
+        },
+        "responses": {
+          "200": {
+            "description": "upload done"
+          }
+        }
+      }
+    },
+    "/upload/text": {
+      "post": {
+        "tags": [
+          "upload"
+        ],
+        "summary": "上传字符串",
+        "description": "",
+        "operationId": "Text",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/uploadText"
         },
         "responses": {
           "200": {
@@ -123,6 +141,17 @@
           }
         },
         "description": "以表单方式上传文件",
+        "required": true
+      },
+      "uploadText": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "以二进制流文件方式上传字符串",
         "required": true
       }
     },
