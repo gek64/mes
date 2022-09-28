@@ -14,7 +14,7 @@ func main() {
 	routers.Upload(engine)
 
 	// 在:80上启动
-	err := engine.Run("localhost:80")
+	err := engine.Run(":80")
 	if err != nil {
 		log.Panicln(err)
 	}
