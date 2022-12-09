@@ -1,4 +1,4 @@
-package mods
+package mod
 
 import (
 	"log"

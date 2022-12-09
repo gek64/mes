@@ -3,7 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"log"
-	"mes/mods"
+	"mes/pkg/mod"
 	"path/filepath"
 )
 
@@ -37,13 +37,13 @@ func RawFile(c *gin.Context) {
 	}
 
 	// 新建文件存储目的地
-	err = mods.CreateFolderIFNotExist(fileDetail.Destination)
+	err = mod.CreateFolderIFNotExist(fileDetail.Destination)
 	if err != nil {
 		log.Panicln(err)
 	}
 
 	// 新建文件
-	err = mods.WriteToFile(filepath.Join(fileDetail.Destination, fileDetail.FileName), rawData)
+	err = mod.WriteToFile(filepath.Join(fileDetail.Destination, fileDetail.FileName), rawData)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -63,7 +63,7 @@ func Files(c *gin.Context) {
 		log.Panicln(err)
 	}
 	// 存储路径不存在则新建
-	err = mods.CreateFolderIFNotExist(location)
+	err = mod.CreateFolderIFNotExist(location)
 	if err != nil {
 		log.Panicln(err)
 	}
