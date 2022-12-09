@@ -11,10 +11,10 @@ func main() {
 	engine := gin.Default()
 
 	// 加载路由
-	routers.Upload(engine)
+	routers.File(engine)
 
 	// 在:80上启动
-	err := engine.Run(":80")
+	err := engine.Run("127.0.0.1:80")
 	if err != nil {
 		log.Panicln(err)
 	}

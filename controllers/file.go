@@ -1,4 +1,4 @@
-package upload
+package controllers
 
 import (
 	"github.com/gin-gonic/gin"
@@ -13,7 +13,7 @@ var (
 	DefaultDestination    = "upload"
 )
 
-type Upload struct {
+type File struct {
 	FileName    string `form:"fileName" json:"fileName" xml:"fileName" uri:"fileName"`
 	Destination string `form:"destination" json:"destination" xml:"destination" uri:"destination"`
 }
@@ -21,13 +21,13 @@ type Upload struct {
 // RawFile 以 application/octet-stream 方式上传单个文件
 func RawFile(c *gin.Context) {
 	// url变量绑定到变量,获取url中的文件名
-	var uploadDetail Upload
-	err := c.ShouldBindQuery(&uploadDetail)
+	var fileDetail File
+	err := c.ShouldBindQuery(&fileDetail)
 	if err != nil {
 		log.Panicln(err)
 	}
-	if uploadDetail.Destination == "" {
-		uploadDetail.Destination = DefaultDestination
+	if fileDetail.Destination == "" {
+		fileDetail.Destination = DefaultDestination
 	}
 
 	// 获取传递来的比特流数据
@@ -37,13 +37,13 @@ func RawFile(c *gin.Context) {
 	}
 
 	// 新建文件存储目的地
-	err = mods.CreateFolderIFNotExist(uploadDetail.Destination)
+	err = mods.CreateFolderIFNotExist(fileDetail.Destination)
 	if err != nil {
 		log.Panicln(err)
 	}
 
 	// 新建文件
-	err = mods.WriteToFile(filepath.Join(uploadDetail.Destination, uploadDetail.FileName), rawData)
+	err = mods.WriteToFile(filepath.Join(fileDetail.Destination, fileDetail.FileName), rawData)
 	if err != nil {
 		log.Panicln(err)
 	}

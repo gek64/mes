@@ -26,15 +26,33 @@
   ],
   "tags": [
     {
-      "name": "upload",
+      "name": "file",
       "description": "上传文件"
     }
   ],
   "paths": {
-    "/upload/rawFile": {
+    "/file": {
       "post": {
         "tags": [
-          "upload"
+          "file"
+        ],
+        "summary": "以表单方式上传文件",
+        "description": "",
+        "operationId": "Files",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Files"
+        },
+        "responses": {
+          "200": {
+            "description": "upload done"
+          }
+        }
+      }
+    },
+    "/file/raw": {
+      "post": {
+        "tags": [
+          "file"
         ],
         "summary": "以二进制流文件方式上传单个文件",
         "description": "",
@@ -60,43 +78,7 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/uploadRawData"
-        },
-        "responses": {
-          "200": {
-            "description": "upload done"
-          }
-        }
-      }
-    },
-    "/upload/files": {
-      "post": {
-        "tags": [
-          "upload"
-        ],
-        "summary": "以表单方式上传文件",
-        "description": "",
-        "operationId": "Files",
-        "requestBody": {
-          "$ref": "#/components/requestBodies/uploadFiles"
-        },
-        "responses": {
-          "200": {
-            "description": "upload done"
-          }
-        }
-      }
-    },
-    "/upload/text": {
-      "post": {
-        "tags": [
-          "upload"
-        ],
-        "summary": "上传字符串",
-        "description": "",
-        "operationId": "Text",
-        "requestBody": {
-          "$ref": "#/components/requestBodies/uploadText"
+          "$ref": "#/components/requestBodies/RawData"
         },
         "responses": {
           "200": {
@@ -108,7 +90,7 @@
   },
   "components": {
     "requestBodies": {
-      "uploadRawData": {
+      "RawData": {
         "content": {
           "application/octet-stream": {
             "schema": {
@@ -120,7 +102,7 @@
         "description": "以二进制流文件方式上传单个文件",
         "required": true
       },
-      "uploadFiles": {
+      "Files": {
         "content": {
           "multipart/form-data": {
             "schema": {
@@ -141,17 +123,6 @@
           }
         },
         "description": "以表单方式上传文件",
-        "required": true
-      },
-      "uploadText": {
-        "content": {
-          "text/plain": {
-            "schema": {
-              "type": "string"
-            }
-          }
-        },
-        "description": "以二进制流文件方式上传字符串",
         "required": true
       }
     },
