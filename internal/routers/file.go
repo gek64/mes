@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"mes/internal/server/controllers"
+	"mes/internal/controllers"
 )
 
 func File(router *gin.Engine) {
