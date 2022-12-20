@@ -28,10 +28,14 @@
     {
       "name": "file",
       "description": "上传文件"
+    },
+    {
+      "name": "text",
+      "description": "上传文本"
     }
   ],
   "paths": {
-    "/file": {
+    "/file/": {
       "post": {
         "tags": [
           "file"
@@ -86,6 +90,24 @@
           }
         }
       }
+    },
+    "/text/": {
+      "post": {
+        "tags": [
+          "text"
+        ],
+        "summary": "以text/plain上传文本",
+        "description": "",
+        "operationId": "Text",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Text"
+        },
+        "responses": {
+          "200": {
+            "description": "upload done"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -123,6 +145,17 @@
           }
         },
         "description": "以表单方式上传文件",
+        "required": true
+      },
+      "Text": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "以text/plain上传文本",
         "required": true
       }
     },
